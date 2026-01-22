@@ -15,4 +15,58 @@ To intuitively understand this payoff, consider Alice trading a "No Loss Perp":
 - And loses nothing if the token goes down
 - She continues to pay the $0.04 funding till she wants to keep her position open.
 
-![alice 1](/alice 1.png)
+![alice 1](/alice1.png)
+
+## Options as Perps
+
+For the accoustomed, you can see that the payoff closely resembles a ATM Cash Settled European Everlasting Option.
+Timelock Perps wraps an ATM cash-settled everlasting option into a retail friendly layer offering a simple, perps-like UX, so traders get familiar CLOB(Hyperliquid) like perps, but without liquidations.
+Timelock abstracts away all of the options related complexity(strike price, premium, expiry etc) so the retail trades it like they trade perps on Hyperliquid or Lighter, but dont get liquidated.
+
+# Trade Example
+Let's take the example of Alice making a 120x return on her 10USDC capital.
+Alice's trade shows how No-Loss Perps can turn a tiny balance into large upside without liquidations, using a familiar perp-like UX.
+
+## Scenario Overview
+Alice wants to long 1 ETH at 2400 USDC but has only 10 USDC in her wallet.
+On a CLOB perps DEX (Hyperliquid, Lighter, Aster), this would require higher margin and have liquidation risk.
+On Timelock, Alice opens a 1 ETH No-Loss Perps long directly from her wallet with no liquidations, even with just 10 USDC.
+
+### Funding And Effective Leverage
+Assume ETH = 2400, IV = 50% the calculated funding for this trade is 1 USDC per hour.
+- Paying 1 USDC for 1 hour of exposure to 2400 USDC notional ≈ 2400x effective leverage.
+- Paying 10 USDC for 10 hours on the same notional ≈ 240x effective leverage.
+Alice can always top up USDC in her wallet to extend the trade duration.
+## How it works:
+To initiate 1 ETH long position at time=t, price =2400
+- Timelock borrows 1 ETH and escrows it
+- Timelock deducts 1 USDC per hour from Alice's Metamask.
+
+After 1 hour, Alice has paid only 1 USDC, equating to a 2400x leverage. She did not deposit any margin for the trade.
+
+Now:
+- If price goes up, Alice captures all of the upside
+- If price goes down, Alice does not lose anything more than the 1 USDC she has paid till now
+
+## Downside Scenario: Price Drops To 2000
+At t + 3h, ETH trades at 2000:
+- Alice has paid 3 USDC in funding so far.
+- On Hyperliquid she would have lost 400 USDC or have gotten liquidated.
+- On Timelock, her max cost/loss is just the 3 USDC she already paid. The position remains open with no liquidation.
+
+### Why?
+- Positions on Timelock are fully collateralized and backed by spot ETH borrowed from Uniswap.
+- On Hyperliquid, she holds a P2P derivative contract against a market maker, not real ETH.
+- Debt is denominated in ETH, which is held in Timelock Escrow
+- Escrow owns >= repay amount, so there is no concept of a forced closure or liquidation
+- To close position, Timelock simply repays back 1 ETH to the LP, and makes them whole
+
+## Upside Scenario: Price Rallies To 3000
+At t + 5h, ETH trades at 3000 and Alice decides to close:
+- She has paid a total of 5 USDC funding over 5 hours.
+- Timelock Escrow holds 1 ETH now worth 3000 USDC.
+
+Protocol flow:
+- Swap 1 ETH back into USDC on Timelock Swap for 3000 USDC equivalent.
+- Repay 2400 USDC to the LP to make them whole.
+- Remaining 600 USDC goes to Alice as profit.
