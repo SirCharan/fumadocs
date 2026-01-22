@@ -1,11 +1,41 @@
 ---
-title: Mechanism
-description: mech
+title: Timelock Perps
+description: Perps without Liquidations
+index: 1
 ---
 
-# No-Loss, No-Liquidation
+## Introduction
+Timelock Perps enables perps without liquidations for all ERC20 tokens, on all EVM chains deployed on Timelock Swap.
 
-Timelock Perps payoff is a No-Loss, No-Liquidation perp payoff. Imagine trading perps where you make the entire profit, but don't make any loss and do not suffer from liquidation, just continue paying funding fees till you want to keep your position open.
+Democratizes access to leverage for 5000+ altcoins and building rails for leveraging RWAs, onchain equities, gold etc, allowing anyone to create a perps market for their token by simply supplying liquidity to Timelock Swap.
+
+## Core Features
+import { Step, Steps } from 'fumadocs-ui/components/steps';
+
+<Steps>
+<Step>
+### Liquidation Free Leverage
+Retail can now perps without the fear of getting liquidated and without blowing up their entire account
+</Step>
+<Step>
+### Oracle Free Design
+Pricing natively derived from Uniswap. No oracles involved. No manipulation. No market makers involved.
+</Step>
+<Step>
+### Permissionless Markets
+Can enable perps for any ERC token, any EVM chain. Memecoins, RWAs, onchain equity. Everything.
+</Step>
+<Step>
+### Timelock Builder Codes
+Enables any project/individual to enable perps on their token and deploy a perps frontend on their own dapp/website and Timelock shares upto 50% of trading fees with them.
+</Step>
+</Steps>
+
+
+# Mechanism Design
+Timelock Perps payoff is a No-Loss, No-Liquidation perp payoff. 
+
+Imagine trading perps where you make the entire profit, but don't make any loss and do not suffer from liquidation, just continue paying funding fees till you want to keep your position open.
 
 ### Understanding the Payoff: Alice's Example
 To intuitively understand this payoff, consider Alice trading a "No Loss Perp":
@@ -22,10 +52,11 @@ To intuitively understand this payoff, consider Alice trading a "No Loss Perp":
 For the accoustomed, you can see that the payoff closely resembles a ATM Cash Settled European Everlasting Option.
 Timelock Perps wraps an ATM cash-settled everlasting option into a retail friendly layer offering a simple, perps-like UX, so traders get familiar CLOB(Hyperliquid) like perps, but without liquidations.
 Timelock abstracts away all of the options related complexity(strike price, premium, expiry etc) so the retail trades it like they trade perps on Hyperliquid or Lighter, but dont get liquidated.
-
+![alice 2](/alice2.png)
 # Trade Example
 Let's take the example of Alice making a 120x return on her 10USDC capital.
 Alice's trade shows how No-Loss Perps can turn a tiny balance into large upside without liquidations, using a familiar perp-like UX.
+![alice 1](/alice31.png)
 
 ## Scenario Overview
 Alice wants to long 1 ETH at 2400 USDC but has only 10 USDC in her wallet.
@@ -47,12 +78,14 @@ After 1 hour, Alice has paid only 1 USDC, equating to a 2400x leverage. She did 
 Now:
 - If price goes up, Alice captures all of the upside
 - If price goes down, Alice does not lose anything more than the 1 USDC she has paid till now
+![alice 1](/alice41.png)
 
 ## Downside Scenario: Price Drops To 2000
 At t + 3h, ETH trades at 2000:
 - Alice has paid 3 USDC in funding so far.
 - On Hyperliquid she would have lost 400 USDC or have gotten liquidated.
 - On Timelock, her max cost/loss is just the 3 USDC she already paid. The position remains open with no liquidation.
+![alice 1](/alice51.png)
 
 ### Why?
 - Positions on Timelock are fully collateralized and backed by spot ETH borrowed from Uniswap.
@@ -70,3 +103,12 @@ Protocol flow:
 - Swap 1 ETH back into USDC on Timelock Swap for 3000 USDC equivalent.
 - Repay 2400 USDC to the LP to make them whole.
 - Remaining 600 USDC goes to Alice as profit.
+
+![alice 1](/alice61.png)
+
+## Result:
+Alice paid 5 USDC in total funding.
+Alice receives 600 USDC profit → 120x return on the 5 USDC she actually spent.
+At all times, her downside was capped at the funding paid; no margin deposit, no liquidation risk.
+At no point of time was her position ever at a loss, or at risk of being closed, even when the loss exceeded her wallet balance or funding paid.
+
