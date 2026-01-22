@@ -1,0 +1,16 @@
+---
+title: Mechanism
+description: mech
+---
+
+# No-Loss, No-Liquidation
+
+Timelock Perps payoff is a No-Loss, No-Liquidation perp payoff. Imagine trading perps where you make the entire profit, but don't make any loss and do not suffer from liquidation, just continue paying funding fees till you want to keep your position open.
+
+### Understanding the Payoff: Alice's Example
+To intuitively understand this payoff, consider Alice trading a "No Loss Perp":
+- Alice longs $100 worth of token.
+- She pays $0.04 funding every hour
+- She keeps the entire upside if the token goes up
+- And loses nothing if the token goes down
+- She continues to pay the $0.04 funding till she wants to keep her position open.
