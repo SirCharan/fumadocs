@@ -5,6 +5,7 @@ const withMDX = createMDX();
 /** @type {import('next').NextConfig} */
 const config = {
   reactStrictMode: true,
+  serverComponentsExternalPackages: ['remark-math', 'rehype-katex'],
   async rewrites() {
     return [
       {
